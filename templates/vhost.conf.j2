@@ -1,0 +1,53 @@
+server {
+
+  server_name {{ vhost.server_names | join(' ') }};
+
+  listen 443 ssl;
+  listen [::]:443 ssl;
+
+  ssl_certificate     /etc/ssl/certs/{{ vhost.name }}.fullchain.pem;
+  ssl_certificate_key /etc/ssl/private/{{ vhost.name }}.key.pem;
+
+  charset utf-8;
+
+  {% if vhost.root is defined %}
+  root {{ vhost.root }};
+  {% endif %}
+
+  {% if vhost.try_files is defined %}
+  try_files {{ vhost.try_files }};
+  {% endif %}
+
+  {% if vhost.locations is defined %}
+  {% for loc in vhost.locations %}
+  location {{ loc.location }} {
+    {% if loc.proxy_pass is defined %}
+    proxy_pass {{ loc.proxy_pass }};
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    {% endif %}
+    {% if loc.alias is defined %}
+    alias {{ loc.alias }};
+    {% endif %}
+    {% if loc.try_files is defined %}
+    try_files {{ loc.try_files }};
+    {% endif %}
+    {% if loc.redirect is defined %}
+    return 301 {{ loc.redirect }};
+    {% endif %}
+  }
+  {% endfor %}
+  {% endif %}
+
+}
+
+server {
+
+  listen 80;
+  listen [::]:80;
+
+  server_name {{ vhost.server_names | join(' ') }};
+
+  return 301 https://$host$request_uri;
+
+}

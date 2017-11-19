@@ -6,7 +6,8 @@
     state: present
   with_items:
     - nginx
-    - nginx-full
+    - nginx-light
+    - ssl-cert
 
 - name: remove default page
   file:

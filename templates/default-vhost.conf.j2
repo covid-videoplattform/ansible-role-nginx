@@ -1,21 +1,21 @@
 server {
 
-        listen 80 default_server;
-        listen [::]:80 default_server;
+  listen 80 default_server;
+  listen [::]:80 default_server;
 
-        listen 443 ssl default_server;
-    	  listen [::]:443 ssl default_server;
+  listen 443 ssl default_server;
+  listen [::]:443 ssl default_server;
 
-        ssl_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
-        ssl_certificate_key /etc/ssl/private/ssl-cert-snakeoil.key;
+  ssl_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
+  ssl_certificate_key /etc/ssl/private/ssl-cert-snakeoil.key;
 
-        server_name _;
+  server_name _;
 
-        return 404;
+  location /.well-known/acme-challenge {
+    default_type "text/plain";
+    root /var/www/default;
+  }
 
-        location /.well-known/acme-challenge {
-                default_type "text/plain";
-                root /var/www/letsencrypt-auto;
-        }
+  root /var/www/default;
 
 }

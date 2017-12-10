@@ -5,14 +5,12 @@ server {
   listen 443 ssl;
   listen [::]:443 ssl;
 
-  ssl_certificate     /etc/ssl/certs/{{ vhost.name }}.fullchain.pem;
-  ssl_certificate_key /etc/ssl/private/{{ vhost.name }}.key.pem;
+  ssl_certificate     /etc/ssl/certs/{{ certificate_name | default(vhost.certificate_name) | default(vhost.name) }}.fullchain.pem;
+  ssl_certificate_key /etc/ssl/private/{{ certificate_name | default(vhost.certificate_name) | default(vhost.name) }}.key.pem;
+
+  add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; ";
 
   charset utf-8;
-
-  {% if vhost.root is defined %}
-  root {{ vhost.root }};
-  {% endif %}
 
   {% if vhost.try_files is defined %}
   try_files {{ vhost.try_files }};
@@ -39,6 +37,10 @@ server {
   {% endfor %}
   {% endif %}
 
+  {% if vhost.root is defined %}
+  root {{ vhost.root }};
+  {% endif %}
+
 }
 
 server {
@@ -47,6 +49,11 @@ server {
   listen [::]:80;
 
   server_name {{ vhost.server_names | join(' ') }};
+
+  location /.well-known/acme-challenge {
+    default_type "text/plain";
+    root /var/www/default;
+  }
 
   return 301 https://$host$request_uri;
 

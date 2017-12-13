@@ -1,6 +1,6 @@
 ---
 
-- include: setup_Debian.yml
+- include_tasks: setup_Debian.yml
 
 - name: nginx.conf
   template:

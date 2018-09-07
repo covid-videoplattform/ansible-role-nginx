@@ -32,3 +32,8 @@
   with_items: "{{ nginx_vhosts }}"
   loop_control:
     loop_var: vhost
+
+- name: ensure nginx is started
+  service:
+    name: nginx
+    state: started

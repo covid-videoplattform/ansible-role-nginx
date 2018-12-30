@@ -1,3 +1,5 @@
 nginx_worker_processes: 4
 nginx_worker_connections: 768
 nginx_redirect_to_https: false
+
+nginx_vhosts: []

@@ -2,12 +2,10 @@
 
 - name: install apt packages
   apt:
-    pkg: "{{item}}"
-    state: present
-  with_items:
-    - nginx
-    - nginx-light
-    - ssl-cert
+    pkg:
+      - nginx
+      - nginx-light
+      - ssl-cert
 
 - name: remove default page
   file:

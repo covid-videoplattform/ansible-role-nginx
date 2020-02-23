@@ -41,6 +41,10 @@ server {
   root {{ vhost.root }};
   {% endif %}
 
+  {% if vhost.custom is defined %}
+  {{ vhost.custom }}
+  {% endif %}
+
 }
 
 server {
